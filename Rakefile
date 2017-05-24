@@ -6,9 +6,7 @@ require 'active_record'
 require 'yaml'
 require 'http'
 
-require './config/environment'
-Dir.glob('app/models/*.rb').each { |r| load r}
-Dir.glob('lib/tasks/*.rake').each { |r| load r}
+require './config/application'
 
 namespace :db do
 

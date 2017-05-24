@@ -12,8 +12,6 @@ namespace :foo do
 
   desc "populate foos"
   task :populate do
-    connection_details = YAML::load(File.open('config/database.yml'))[ENV["DATABASE_ENV"]]
-    ActiveRecord::Base.establish_connection(connection_details)
-    Foo.where(name: "foolala", published: true).first_or_create
+    Foo.where(name: "foomoo", published: true).first_or_create
   end
 end
