@@ -7,6 +7,7 @@ require 'yaml'
 require 'http'
 
 require './config/environment'
+Dir.glob('app/models/*.rb').each { |r| load r}
 Dir.glob('lib/tasks/*.rake').each { |r| load r}
 
 namespace :db do
@@ -14,8 +15,6 @@ namespace :db do
   desc "Migrate database"
   task :migrate do
     connection_details = YAML::load(File.open('config/database.yml'))[ENV["DATABASE_ENV"]]
-
-    puts connection_details
     ActiveRecord::Base.establish_connection(connection_details)
     ActiveRecord::Migrator.migrate("db/migrate/")
   end
