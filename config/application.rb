@@ -12,9 +12,9 @@ Dir.glob('app/models/*.rb').each { |r| load r}
 # correct credentials
 config_path = File.expand_path('config/application.yml')
 if File.exists? config_path
-  ENV.update YAML.load_file(config_path)[ENV["DATABASE_ENV"]]
+  ENV.update YAML.load_file(config_path)[ENV["DB"]]
 end
 
 # Set up database connection
-connection_details = YAML::load(File.open('config/database.yml'))[ENV["DATABASE_ENV"]]
+connection_details = YAML::load(File.open('config/database.yml'))[ENV["DB"]]
 ActiveRecord::Base.establish_connection(connection_details)
