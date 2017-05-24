@@ -1,2 +1,6 @@
-source 'https://rubygems.org'
-gem 'pg'
+source "https://rubygems.org"
+ruby "2.3.1"
+
+gem "rake"
+gem "activerecord"
+gem "pg"

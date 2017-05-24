@@ -2,3 +2,10 @@ tmp/
 cookbooks/
 .vagrant/
 ubuntu-xenial-16.04-cloudimg-console.log
+
+# Ignore bundler config.
+/.bundle
+
+# Secret keys
+/config/database.yml
+/config/application.yml
