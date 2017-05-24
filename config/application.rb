@@ -1,6 +1,11 @@
+require 'pg'
+require 'active_record'
+require 'yaml'
+require 'http'
+
 require './config/environment'
+
 Dir.glob('app/models/*.rb').each { |r| load r}
-Dir.glob('lib/tasks/*.rake').each { |r| load r}
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the

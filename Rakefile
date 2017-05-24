@@ -1,10 +1,7 @@
 require "rubygems"
 require "bundler/setup"
 
-require 'pg'
-require 'active_record'
-require 'yaml'
-require 'http'
+Dir.glob('lib/tasks/*.rake').each { |r| load r}
 
 require 'standalone_migrations'
 StandaloneMigrations::Tasks.load_tasks
