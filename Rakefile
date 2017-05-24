@@ -4,7 +4,9 @@ require "bundler/setup"
 require 'pg'
 require 'active_record'
 require 'yaml'
+
 require './config/environment'
+Dir.glob('lib/tasks/*.rake').each { |r| load r}
 
 namespace :db do
 
