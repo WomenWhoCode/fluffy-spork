@@ -5,7 +5,7 @@ require 'http'
 
 require './config/environment'
 
-Dir.glob('app/models/*.rb').each { |r| load r}
+Dir.glob('app/models/**/*.rb').each { |r| load r}
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the
