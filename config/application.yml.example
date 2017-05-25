@@ -1,0 +1,8 @@
+default: &default
+  SOME_KEY: "foobob"
+
+development:
+  <<: *default
+
+test:
+  <<: *default
