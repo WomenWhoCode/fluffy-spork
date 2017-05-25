@@ -17,6 +17,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 #require 'support/factory_girl'
+ENV["DB"] = "test"
 require './config/application'
 require 'factory_girl'
 require 'faker'
