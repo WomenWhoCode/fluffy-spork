@@ -30,6 +30,7 @@ GEM
     arel (8.0.0)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
+    database_cleaner (1.6.1)
     diff-lcs (1.2.5)
     domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
@@ -102,6 +103,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  database_cleaner
   factory_girl
   faker (~> 1.7)
   http

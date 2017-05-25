@@ -9,5 +9,9 @@ gem 'standalone_migrations'
 group :development, :test do
   gem 'factory_girl'
   gem 'rspec'
+end
+
+group :test do
   gem 'faker', '~> 1.7'
+  gem 'database_cleaner'
 end
