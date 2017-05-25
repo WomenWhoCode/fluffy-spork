@@ -1,0 +1,17 @@
+{
+  "name": "meet-maynard",
+  "scripts": {
+    "postdeploy": "bundle exec rake db:schema:load db:seed"
+  },
+  "env": {
+    "DB": "production"
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
