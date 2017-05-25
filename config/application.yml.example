@@ -1,8 +1,11 @@
 default: &default
-  SOME_KEY: "foobob"
+  DATABASE_USER: ubuntu
+  DATABASE_PASSWORD: ""
 
 development:
   <<: *default
+  DATABASE_NAME: maynard_development
 
 test:
   <<: *default
+  DATABASE_NAME: maynard_test
