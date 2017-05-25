@@ -16,5 +16,9 @@ if File.exists? config_path
 end
 
 # Set up database connection
-connection_details = YAML::load(File.open('config/database.yml'))[ENV["DB"]]
+if ENV["DB"] == "production"
+  connection_details = ENV["DATABASE_URL"]
+else
+  connection_details = YAML::load(ERB.new(IO.read('config/database.yml')).result)[ENV["DB"]]
+end
 ActiveRecord::Base.establish_connection(connection_details)

@@ -7,5 +7,4 @@ ubuntu-xenial-16.04-cloudimg-console.log
 /.bundle
 
 # Secret keys
-/config/database.yml
 /config/application.yml
