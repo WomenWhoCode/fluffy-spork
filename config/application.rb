@@ -2,10 +2,13 @@ require 'pg'
 require 'active_record'
 require 'yaml'
 require 'http'
+require 'erb'
+require 'bugsnag'
 
 require './config/environment'
 
 Dir.glob('app/models/**/*.rb').each { |r| load r}
+$:.unshift(File.expand_path('../../lib', __FILE__))
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the
@@ -22,3 +25,16 @@ else
   connection_details = YAML::load(ERB.new(IO.read('config/database.yml')).result)[ENV["DB"]]
 end
 ActiveRecord::Base.establish_connection(connection_details)
+
+# Bugsnag configuration
+# https://docs.bugsnag.com/platforms/ruby/other/
+Bugsnag.configure do |config|
+  config.api_key = ENV['BUGSNAG_KEY']
+  config.release_stage = ENV['DB']
+end
+
+at_exit do
+  if $!
+    Bugsnag.notify($!)
+  end
+end

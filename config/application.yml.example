@@ -1,6 +1,8 @@
 default: &default
   DATABASE_USER: ubuntu
   DATABASE_PASSWORD: ""
+  MEETUP_KEY: "your-key-here"
+  BUGSNAG_KEY: ""
 
 development:
   <<: *default

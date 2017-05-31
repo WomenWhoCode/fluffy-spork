@@ -5,6 +5,7 @@ gem "activerecord"
 gem "pg"
 gem "http"
 gem 'standalone_migrations'
+gem 'bugsnag'
 
 group :development, :test do
   gem 'factory_girl'

@@ -28,6 +28,7 @@ GEM
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (8.0.0)
+    bugsnag (5.3.2)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
     database_cleaner (1.6.1)
@@ -103,6 +104,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  bugsnag
   database_cleaner
   factory_girl
   faker (~> 1.7)
