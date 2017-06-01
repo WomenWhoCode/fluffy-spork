@@ -1,5 +1,3 @@
-require 'meetup/api'
-
 describe Meetup::Api do
   it 'fails without #options' do
     expect {

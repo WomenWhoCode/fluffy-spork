@@ -1,5 +1,4 @@
 require 'rack'
-require 'MMLog'
 
 module Meetup
   class Api
@@ -43,8 +42,8 @@ module Meetup
       if response_success?
         body
       else
-        errors = body[:errors] || { "errors" => [{"message": "Meetup response has no body"}] }
-        raise errors["errors"].map { |h| h[:message] }.join("; ")
+        errors = body["errors"] || [{"message": "Meetup response has no body"}]
+        raise errors.map { |h| h["message"] }.join("; ")
       end
     end
 

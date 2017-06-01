@@ -8,7 +8,7 @@ require 'bugsnag'
 require './config/environment'
 
 Dir.glob('app/models/**/*.rb').each { |r| load r}
-$:.unshift(File.expand_path('../../lib', __FILE__))
+Dir.glob('lib/**/*.rb').each { |r| load r}
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the
