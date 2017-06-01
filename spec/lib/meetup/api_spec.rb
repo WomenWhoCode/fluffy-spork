@@ -43,13 +43,19 @@ describe Meetup::Api do
     end
     let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
 
-    before do
+    it 'returns hash' do
       stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
         .to_return(body: response.to_json, status: 200, headers: {})
+
+      expect(meetup_api.get_response).to eq response
     end
 
-    it 'returns json' do
-      expect(meetup_api.get_response).to eq response
+    it 'notifies Bugsnag on error' do
+      stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+        .to_return(body: '{}', status: 404, headers: {})
+
+      expect(Bugsnag).to receive(:notify).once
+      expect(meetup_api.get_response).to include("errors")
     end
   end
 end
