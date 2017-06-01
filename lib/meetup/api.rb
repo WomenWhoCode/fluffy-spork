@@ -26,12 +26,12 @@ module Meetup
         { "errors" => [{"message": "Error parsing Meetup response"}] }
     end
 
-    protected
-
     def build_url
       query_string = Rack::Utils.build_query(@options)
       "#{base_url}?#{query_string}"
     end
+
+    protected
 
     def base_url
       "https://#{BASE_URI}/#{@data_type.join('/')}/"
