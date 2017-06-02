@@ -21,6 +21,7 @@ ENV["DB"] = "test"
 require './config/application'
 require 'factory_girl'
 require 'faker'
+require 'webmock/rspec'
 Dir[File.join('./spec/support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|

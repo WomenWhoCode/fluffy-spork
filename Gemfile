@@ -5,6 +5,7 @@ gem "activerecord"
 gem "pg"
 gem "http"
 gem 'standalone_migrations'
+gem 'bugsnag'
 
 group :development, :test do
   gem 'factory_girl'
@@ -14,4 +15,5 @@ end
 group :test do
   gem 'faker', '~> 1.7'
   gem 'database_cleaner'
+  gem 'webmock'
 end
