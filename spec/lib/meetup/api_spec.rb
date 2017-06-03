@@ -41,19 +41,65 @@ describe Meetup::Api do
     end
     let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
 
-    it 'returns hash' do
-      stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: response.to_json, status: 200, headers: {})
+    context "valid request" do
+      before do
+        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+        .to_return(body: response.to_json, status: 200,
+                   headers: {"X-Ratelimit-Remaining"=>"29",
+                             "X-Ratelimit-Reset"=>"10"})
+      end
 
-      expect(meetup_api.get_response).to eq response
+      it 'returns hash' do
+        expect(meetup_api.get_response).to eq response
+      end
+
+      it "sets remaining_requests and reset_seconds values" do
+        meetup_api.get_response
+        expect(meetup_api.remaining_requests).to eq 29
+        expect(meetup_api.reset_seconds).to eq 10
+      end
+
+      it "series of requests calls sleep" do
+        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+        .to_return(body: response.to_json, status: 200,
+                   headers: {"X-Ratelimit-Remaining"=>"0",
+                             "X-Ratelimit-Reset"=>"10"})
+        expect_any_instance_of(Meetup::Api).to receive(:sleep).with(10).once
+        meetup_api.get_response
+        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+        .to_return(body: response.to_json, status: 200,
+                   headers: {"X-Ratelimit-Remaining"=>"20",
+                             "X-Ratelimit-Reset"=>"10"})
+        meetup_api.get_response
+        meetup_api.get_response
+      end
     end
 
-    it 'notifies Bugsnag on error' do
-      stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+    context "invalid request" do
+      it 'notifies Bugsnag on error' do
+        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
         .to_return(body: '{}', status: 404, headers: {})
 
-      expect(Bugsnag).to receive(:notify).once
-      expect(meetup_api.get_response).to include("errors")
+        expect(Bugsnag).to receive(:notify).once
+        expect(meetup_api.get_response).to include("errors")
+      end
+    end
+  end
+
+  context "#throttle_wait" do
+    let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
+
+    it "returns 0 if remaining requests is positive" do
+      expect_any_instance_of(Meetup::Api).to_not receive(:sleep)
+      meetup_api.remaining_requests = 5
+      expect(meetup_api.throttle_wait).to eq 0
+    end
+
+    it "returns reset seconds if remaining requests is negative" do
+      meetup_api.remaining_requests = 0
+      meetup_api.reset_seconds = 10
+      expect_any_instance_of(Meetup::Api).to receive(:sleep).with(meetup_api.reset_seconds)
+      expect(meetup_api.throttle_wait).to eq meetup_api.reset_seconds
     end
   end
 end
