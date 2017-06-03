@@ -43,10 +43,7 @@ describe Meetup::Api do
 
     context "valid request" do
       before do
-        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: response.to_json, status: 200,
-                   headers: {"X-Ratelimit-Remaining"=>"29",
-                             "X-Ratelimit-Reset"=>"10"})
+        meetup_request_success_stub
       end
 
       it 'returns hash' do
@@ -60,17 +57,18 @@ describe Meetup::Api do
       end
 
       it "series of requests calls sleep" do
-        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: response.to_json, status: 200,
-                   headers: {"X-Ratelimit-Remaining"=>"0",
-                             "X-Ratelimit-Reset"=>"10"})
         expect_any_instance_of(Meetup::Api).to receive(:sleep).with(10).once
+        meetup_request_success_stub(remaining: 0)
+        # This call uses default initializing and won't call sleep.
+        # Returns 0 requests remaining.
         meetup_api.get_response
-        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: response.to_json, status: 200,
-                   headers: {"X-Ratelimit-Remaining"=>"20",
-                             "X-Ratelimit-Reset"=>"10"})
+        # This call should have the 0 requests remaining from the previous
+        # request and will call the sleep function. After the api request, it
+        # returns 20 requests remaining.
+        meetup_request_success_stub(remaining: 20)
         meetup_api.get_response
+        # Requests remaining will be set to 20 so sleep will not be called
+        # for this request either.
         meetup_api.get_response
       end
     end
