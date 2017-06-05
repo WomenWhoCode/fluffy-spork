@@ -56,6 +56,26 @@ describe Meetup::Api do
         expect(meetup_api.reset_seconds).to eq 10
       end
 
+      it "creates watermark if none is set" do
+        expect{
+          meetup_api.get_response
+        }.to change(Watermark, :count).by(1)
+      end
+
+      it "does not create watermark if exists with matching url" do
+        create(:watermark, etag: "abc")
+        expect{
+          meetup_api.get_response
+        }.to_not change(Watermark, :count)
+      end
+
+      it "updates watermark etag" do
+        watermark = create(:watermark, etag: "def")
+        meetup_api.get_response
+        watermark.reload
+        expect(watermark.etag).to eq "abc"
+      end
+
       it "calls sleep after a series of requests" do
         expect_any_instance_of(Meetup::Api).to receive(:sleep).with(10).once
         meetup_request_success_stub(remaining: 0)
@@ -70,6 +90,22 @@ describe Meetup::Api do
         # Requests remaining will be set to 20 so sleep will not be called
         # for this request either.
         meetup_api.get_response
+      end
+
+      context "when no new data is available" do
+        before do
+          meetup_request_not_modified_stub
+        end
+
+        it "returns empty hash" do
+          expect(meetup_api.get_response).to eq Hash.new
+        end
+
+        it "does not modify remaining_requests and reset_seconds values" do
+          meetup_api.get_response
+          expect(meetup_api.remaining_requests).to eq 1
+          expect(meetup_api.reset_seconds).to eq 1
+        end
       end
     end
 
