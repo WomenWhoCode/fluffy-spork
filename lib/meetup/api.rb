@@ -37,9 +37,8 @@ module Meetup
     end
 
     def throttle_wait
-      return 0 if remaining_requests > 0
+      return if remaining_requests > 0
       sleep reset_seconds
-      reset_seconds
     end
 
     protected

@@ -87,17 +87,17 @@ describe Meetup::Api do
   context "#throttle_wait" do
     let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
 
-    it "returns 0 if remaining requests is positive" do
-      expect_any_instance_of(Meetup::Api).to_not receive(:sleep)
+    it "does not sleep if remaining requests is positive" do
       meetup_api.remaining_requests = 5
-      expect(meetup_api.throttle_wait).to eq 0
+      expect_any_instance_of(Meetup::Api).to_not receive(:sleep)
+      meetup_api.throttle_wait
     end
 
     it "returns reset seconds if remaining requests is negative" do
       meetup_api.remaining_requests = 0
       meetup_api.reset_seconds = 10
       expect_any_instance_of(Meetup::Api).to receive(:sleep).with(meetup_api.reset_seconds)
-      expect(meetup_api.throttle_wait).to eq meetup_api.reset_seconds
+      meetup_api.throttle_wait
     end
   end
 end
