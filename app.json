@@ -15,10 +15,12 @@
       "value": "DEBUG"
     },
     "MEETUP_KEY": {
-      "description": "The key required to communicate with the Meetup API"
+      "description": "The key required to communicate with the Meetup API",
+      "required": true
     },
     "BUGSNAG_KEY": {
-      "description": "The key required to communicate with the Bugsnag API"
+      "description": "The key required to communicate with the Bugsnag API",
+      "required": true
     }
   },
   "formation": {
