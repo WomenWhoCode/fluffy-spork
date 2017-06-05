@@ -41,19 +41,63 @@ describe Meetup::Api do
     end
     let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
 
-    it 'returns hash' do
-      stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: response.to_json, status: 200, headers: {})
+    context "valid request" do
+      before do
+        meetup_request_success_stub
+      end
 
-      expect(meetup_api.get_response).to eq response
+      it 'returns hash' do
+        expect(meetup_api.get_response).to eq response
+      end
+
+      it "sets remaining_requests and reset_seconds values" do
+        meetup_api.get_response
+        expect(meetup_api.remaining_requests).to eq 29
+        expect(meetup_api.reset_seconds).to eq 10
+      end
+
+      it "calls sleep after a series of requests" do
+        expect_any_instance_of(Meetup::Api).to receive(:sleep).with(10).once
+        meetup_request_success_stub(remaining: 0)
+        # This call uses default initializing and won't call sleep.
+        # Returns 0 requests remaining.
+        meetup_api.get_response
+        # This call should have the 0 requests remaining from the previous
+        # request and will call the sleep function. After the api request, it
+        # returns 20 requests remaining.
+        meetup_request_success_stub(remaining: 20)
+        meetup_api.get_response
+        # Requests remaining will be set to 20 so sleep will not be called
+        # for this request either.
+        meetup_api.get_response
+      end
     end
 
-    it 'notifies Bugsnag on error' do
-      stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+    context "invalid request" do
+      it 'notifies Bugsnag on error' do
+        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
         .to_return(body: '{}', status: 404, headers: {})
 
-      expect(Bugsnag).to receive(:notify).once
-      expect(meetup_api.get_response).to include("errors")
+        expect(Bugsnag).to receive(:notify).once
+        expect(meetup_api.get_response).to include("errors")
+      end
+    end
+  end
+
+  context "#throttle_wait" do
+    let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
+
+    it "does not sleep if remaining requests is positive" do
+      meetup_api.remaining_requests = 5
+      expect_any_instance_of(Meetup::Api).to_not receive(:sleep)
+      meetup_api.throttle_wait
+    end
+
+    it "returns reset seconds if remaining requests is negative" do
+      meetup_api.remaining_requests = 0
+      meetup_api.reset_seconds = 10
+      expect_any_instance_of(Meetup::Api).to receive(:sleep).with(meetup_api.reset_seconds)
+      meetup_api.throttle_wait
     end
   end
 end
