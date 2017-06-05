@@ -1,17 +1,36 @@
 {
-  "name": "meet-maynard",
+  "name": "Meet Maynard",
+  "description": "Using the Meetup Pro API, this app gathers stats and stores the data in a relational database for further analysis with tools like Chartio.",
+  "repository": "https://github.com/WomenWhoCode/meet-maynard",
   "scripts": {
     "postdeploy": "bundle exec rake db:schema:load db:seed"
   },
   "env": {
-    "DB": "production"
+    "DB": {
+      "description": "Which environment we are operating in",
+      "value": "production"
+    },
+    "LOG_LEVEL": {
+      "description": "What level we want to see in our logs",
+      "value": "DEBUG"
+    },
+    "MEETUP_KEY": {
+      "description": "The key required to communicate with the Meetup API",
+      "required": true
+    },
+    "BUGSNAG_KEY": {
+      "description": "The key required to communicate with the Bugsnag API",
+      "required": true
+    }
   },
   "formation": {
   },
   "addons": [
-
+    "heroku-postgresql"
   ],
   "buildpacks": [
-
+    {
+      "url": "heroku/ruby"
+    }
   ]
 }
