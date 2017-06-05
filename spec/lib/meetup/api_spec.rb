@@ -56,7 +56,7 @@ describe Meetup::Api do
         expect(meetup_api.reset_seconds).to eq 10
       end
 
-      it "series of requests calls sleep" do
+      it "calls sleep after a series of requests" do
         expect_any_instance_of(Meetup::Api).to receive(:sleep).with(10).once
         meetup_request_success_stub(remaining: 0)
         # This call uses default initializing and won't call sleep.
