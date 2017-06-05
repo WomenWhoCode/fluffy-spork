@@ -12,7 +12,7 @@
     },
     "LOG_LEVEL": {
       "description": "What level we want to see in our logs",
-      "value": "DEBUG",
+      "value": "DEBUG"
     },
     "MEETUP_KEY": {
       "description": "The key required to communicate with the Meetup API"
@@ -24,7 +24,7 @@
   "formation": {
   },
   "addons": [
-    "heroku-postgresql",
+    "heroku-postgresql"
   ],
   "buildpacks": [
     {
