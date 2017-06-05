@@ -6,6 +6,7 @@ gem "pg"
 gem "http"
 gem 'standalone_migrations'
 gem 'bugsnag'
+gem 'pry'
 
 group :development, :test do
   gem 'factory_girl'
