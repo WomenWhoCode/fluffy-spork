@@ -19,26 +19,34 @@ module Meetup
     # https://www.meetup.com/meetup_api/docs/#responses
     # https://www.meetup.com/meetup_api/docs/#errors
     def get_response
-      url = build_url
-      MMLog.log.debug(url)
       throttle_wait
-      @response = HTTP.get(url)
-      set_throttle_values
-      get_body
+      @response = do_request
+      if @response.status.code == 304
+        MMLog.log.debug("No modifications to response since request was last made. Delete watermark etag for watermark id #{@watermark.id} to re-run data.")
+        return {}
+      else
+        set_throttle_values
+        update_watermark
+        get_body
+      end
 
       rescue => e
         Bugsnag.notify("Error parsing Meetup response: #{e}")
         { "errors" => [{"message": "Error parsing Meetup response"}] }
     end
 
-    def build_url
-      query_string = Rack::Utils.build_query(@options)
+    def build_url(options=@options)
+      query_string = Rack::Utils.build_query(options)
       "#{base_url}?#{query_string}"
     end
 
     def throttle_wait
       return if remaining_requests > 0
       sleep reset_seconds
+    end
+
+    def update_watermark
+      @watermark.update(etag: @response.headers.get("etag").first)
     end
 
     protected
@@ -66,6 +74,23 @@ module Meetup
 
     def response_success?
       @response && @response.code == OK
+    end
+
+    private
+
+    def do_request
+      url = build_url
+      MMLog.log.debug(url)
+
+      @watermark = Watermark.where(url: sanitized_url).first_or_create
+      etag_str = %Q|#{@watermark.etag}|
+      HTTP.headers('If-None-Match' => "#{etag_str}").get(url)
+    end
+
+    def sanitized_url
+      options_dup = @options.dup
+      options_dup.delete(:key)
+      build_url(options_dup)
     end
   end
 end
