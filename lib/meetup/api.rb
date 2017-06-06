@@ -22,6 +22,7 @@ module Meetup
       throttle_wait
       @response = do_request
       if @response.status.code == 304
+        MMLog.log.debug("No modifications to response since request was last made. Delete watermark etag for watermark id #{@watermark.id} to re-run data.")
         return {}
       else
         set_throttle_values
