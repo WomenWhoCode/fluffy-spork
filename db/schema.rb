@@ -10,10 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170605202043) do
+ActiveRecord::Schema.define(version: 20170607214332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "group_stats", force: :cascade do |t|
+    t.integer "group_id"
+    t.string "name"
+    t.text "description"
+    t.float "lat"
+    t.float "lon"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.string "urlname"
+    t.integer "member_count", default: 0
+    t.float "average_age"
+    t.datetime "founded_date"
+    t.datetime "pro_join_date"
+    t.datetime "last_event"
+    t.datetime "next_event"
+    t.integer "past_events", default: 0
+    t.integer "upcoming_events", default: 0
+    t.integer "past_rsvps", default: 0
+    t.float "rsvps_per_event", default: 0.0
+    t.integer "repeat_rsvpers", default: 0
+    t.float "gender_unknown", default: 0.0
+    t.float "gender_female", default: 0.0
+    t.float "gender_male", default: 0.0
+    t.float "gender_other", default: 0.0
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "watermarks", force: :cascade do |t|
     t.string "url"
