@@ -14,4 +14,19 @@ namespace :data_import do
       Bugsnag.notify(e)
     end
   end
+
+  desc "pull event data. Usage: rake data_import:events['Women-Who-Code-Silicon-Valley']"
+  task :events, [:urlname] do |t, args|
+    urlname = args[:urlname]
+    abort("urlname parameter required: rake data_import:events['Women-Who-Code-Silicon-Valley']") unless urlname.present?
+
+    begin
+      m = Meetup::Api.new(data_type: [urlname, "events"], options: {})
+      data = m.get_response
+      Event.insert_records(data)
+
+    rescue Exception => e
+      Bugsnag.notify(e)
+    end
+  end
 end
