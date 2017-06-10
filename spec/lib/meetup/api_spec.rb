@@ -1,8 +1,8 @@
 describe Meetup::Api do
-  it 'fails without #options' do
+  it 'does not fail without #options' do
     expect {
       Meetup::Api.new(data_type: [])
-    }.to raise_error(ArgumentError)
+    }.to_not raise_error
   end
 
   it 'fails without #data_type' do

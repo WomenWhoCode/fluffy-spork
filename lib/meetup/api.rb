@@ -8,7 +8,7 @@ module Meetup
 
     attr_accessor :remaining_requests, :reset_seconds
 
-    def initialize(data_type:, options:)
+    def initialize(data_type:, options: {})
       @data_type = data_type
       @options = options
       @options[:key] = ENV['MEETUP_KEY']
