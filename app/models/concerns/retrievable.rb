@@ -8,6 +8,7 @@ module Retrievable
       records.each do |record|
         obj = self.where("#{meetup_primary_key}": record["id"]).first_or_create
         record.delete("id")
+        record = flatten_record(record)
         record.each do |k, v|
           setter = "#{k}="
           next unless obj.respond_to?(setter)
@@ -19,6 +20,20 @@ module Retrievable
         end
         obj.save
       end
+    end
+
+    private
+
+    def flatten_record(record)
+      sub_hash = {}
+      record.each do |k, v|
+        next unless v.is_a?(Hash)
+        record.delete(k)
+        v.each do |sub_k, sub_v|
+          sub_hash["#{k}_#{sub_k}"] = sub_v
+        end
+      end
+      record.merge(sub_hash)
     end
   end
 end
