@@ -3,7 +3,7 @@ namespace :data_import do
   task :pro_group, [:group] do |t, args|
     begin
       group = args[:group].presence || 'womenwhocode'
-      m = Meetup::Api.new(data_type: ["pro", group, "groups"], options: {})
+      m = Meetup::Api.new(data_type: ["pro", group, "groups"])
       data = m.get_response
       while data
         GroupStat.insert_records(data)
@@ -21,7 +21,7 @@ namespace :data_import do
     abort("urlname parameter required: rake data_import:events['Women-Who-Code-Silicon-Valley']") unless urlname.present?
 
     begin
-      m = Meetup::Api.new(data_type: [urlname, "events"], options: {})
+      m = Meetup::Api.new(data_type: [urlname, "events"])
       data = m.get_response
       Event.insert_records(data)
 
