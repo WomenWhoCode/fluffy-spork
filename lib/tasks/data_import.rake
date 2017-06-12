@@ -5,7 +5,10 @@ namespace :data_import do
       group = args[:group].presence || 'womenwhocode'
       m = Meetup::Api.new(data_type: ["pro", group, "groups"], options: {})
       data = m.get_response
-      GroupStat.insert_records(data)
+      while data
+        GroupStat.insert_records(data)
+        data = m.get_next_page(Date.today)
+      end
 
     rescue Exception => e
       Bugsnag.notify(e)

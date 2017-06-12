@@ -11,5 +11,5 @@ development:
 test:
   <<: *default
   DATABASE_NAME: maynard_test
-  MEETUP_KEY: "real-key-not-needed"
+  MEETUP_KEY: "abcde01234" # real key not needed, but must be in hex format
   LOG_LEVEL: "WARN"

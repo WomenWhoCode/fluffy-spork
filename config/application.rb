@@ -2,6 +2,7 @@ require 'pg'
 require 'active_record'
 require 'yaml'
 require 'http'
+require 'nitlink/response'
 require 'erb'
 require 'bugsnag'
 
