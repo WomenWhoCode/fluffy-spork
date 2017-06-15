@@ -1,4 +1,5 @@
 require 'rack'
+require 'nitlink/response'
 
 module Meetup
   class Api
