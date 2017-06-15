@@ -7,6 +7,7 @@ gem "http"
 gem 'standalone_migrations'
 gem 'bugsnag'
 gem 'pry'
+gem 'nitlink'
 
 group :development, :test do
   gem 'factory_girl'

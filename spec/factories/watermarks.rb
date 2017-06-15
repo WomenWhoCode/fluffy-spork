@@ -4,6 +4,6 @@ FactoryGirl.define do
       data_type ""
     end
 
-    url { "https://api.meetup.com/#{data_type}/?" }
+    url { "https://api.meetup.com/#{data_type}/?key=sanitized" }
   end
 end

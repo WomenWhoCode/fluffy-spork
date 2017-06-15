@@ -44,6 +44,7 @@ GEM
     faker (1.7.3)
       i18n (~> 0.5)
     hashdiff (0.3.4)
+    hashwithindifferentaccess (0.1.1)
     http (2.2.1)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -59,6 +60,8 @@ GEM
     method_source (0.8.2)
     mini_portile2 (2.1.0)
     minitest (5.10.2)
+    nitlink (1.0.0)
+      hashwithindifferentaccess (~> 0.1.1)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
     pg (0.20.0)
@@ -123,6 +126,7 @@ DEPENDENCIES
   factory_girl
   faker (~> 1.7)
   http
+  nitlink
   pg
   pry
   rspec

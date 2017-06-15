@@ -1,4 +1,5 @@
 require 'rack'
+require 'nitlink/response'
 
 module Meetup
   class Api
@@ -35,8 +36,8 @@ module Meetup
         { "errors" => [{"message": "Error parsing Meetup response"}] }
     end
 
-    def build_url(options=@options)
-      query_string = Rack::Utils.build_query(options)
+    def build_url
+      query_string = Rack::Utils.build_query(@options)
       "#{base_url}?#{query_string}"
     end
 
@@ -47,6 +48,11 @@ module Meetup
 
     def update_watermark
       @watermark.update(etag: @response.headers.get("etag").first)
+    end
+
+    def get_next_page(until_date=nil)
+      @url = pagination_link(until_date)
+      get_response if @url
     end
 
     protected
@@ -79,18 +85,26 @@ module Meetup
     private
 
     def do_request
-      url = build_url
-      MMLog.log.debug(url)
+      @url ||= build_url
+      MMLog.log.debug(@url)
 
       @watermark = Watermark.where(url: sanitized_url).first_or_create
       etag_str = %Q|#{@watermark.etag}|
-      HTTP.headers('If-None-Match' => "#{etag_str}").get(url)
+      HTTP.headers('If-None-Match' => "#{etag_str}").get(@url)
     end
 
     def sanitized_url
-      options_dup = @options.dup
-      options_dup.delete(:key)
-      build_url(options_dup)
+      @url.gsub(/key=[a-f0-9]+/,'key=sanitized')
+    end
+
+    def pagination_link(until_date)
+      target = @response.links.by_rel('next').try(:target)
+      return target.to_s if target && !until_date
+
+      if target && target.to_s =~ /scroll=since%3A(\d{4}-\d{2}-\d{2})/
+        since_date = Date.strptime($1, "%Y-%m-%d")
+        since_date < until_date ? target.to_s : nil
+      end
     end
   end
 end
