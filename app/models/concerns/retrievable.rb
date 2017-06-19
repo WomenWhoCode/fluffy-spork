@@ -1,7 +1,7 @@
 module Retrievable
   extend ActiveSupport::Concern
 
-  DATE_FIELDS = %w(founded_date pro_join_date last_event next_event)
+  DATE_FIELDS = %w(founded_date pro_join_date last_event next_event time)
 
   module ClassMethods
     def insert_records(records)

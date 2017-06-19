@@ -44,6 +44,7 @@ RSpec.describe Event, type: :model do
       event = Event.last
       expect(event.event_id).to eq "cqcpbnywjbqb"
       expect(event.group_id).to eq 14429832
+      expect(event.time).to eq Time.utc(2017,6,13,2,0,0)
     end
 
     it "does not increase event record if event id already exists" do
