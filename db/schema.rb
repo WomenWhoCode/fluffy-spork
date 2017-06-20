@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20170619174111) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_event_time_stored"
+    t.datetime "last_stored_event_time"
   end
 
   create_table "watermarks", force: :cascade do |t|
