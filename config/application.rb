@@ -1,11 +1,11 @@
+require './config/environment'
 require 'pg'
-require 'active_record'
+require './config/active_record'
 require 'yaml'
 require 'http'
 require 'erb'
 require 'bugsnag'
 
-require './config/environment'
 require './config/i18n'
 
 Dir.glob('app/models/**/*.rb').each { |r| load r}
