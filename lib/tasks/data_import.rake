@@ -17,16 +17,11 @@ namespace :data_import do
 
   desc "pull event data. Usage: rake data_import:events['Women-Who-Code-Silicon-Valley']"
   task :events, [:urlname] do |t, args|
-    urlname = args[:urlname]
-    abort("urlname parameter required: rake data_import:events['Women-Who-Code-Silicon-Valley']") unless urlname.present?
+    scope = args[:urlname].present? ? GroupStat.where(urlname: args[:urlname]) : GroupStat.all
 
-    begin
-      m = Meetup::Api.new(data_type: [urlname, "events"])
-      data = m.get_response
-      Event.insert_records(data)
-
-    rescue Exception => e
-      Bugsnag.notify(e)
+    scope.find_each do |group_stat|
+      next unless group_stat.urlname.present?
+      Event.retrieve_events(group_stat)
     end
   end
 end
