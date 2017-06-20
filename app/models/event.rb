@@ -1,6 +1,8 @@
 class Event < ActiveRecord::Base
   include Retrievable
 
+  belongs_to :group, class_name: "GroupStat", primary_key: :group_id
+
   class << self
     def meetup_primary_key
       :event_id

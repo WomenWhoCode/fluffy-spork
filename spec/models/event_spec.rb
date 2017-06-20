@@ -1,4 +1,15 @@
 RSpec.describe Event, type: :model do
+  it "has a valid factory" do
+    event = build(:event)
+    expect(event.valid?).to be true
+  end
+
+  it "belongs to a group" do
+    group_stat = create(:group_stat, group_id: 12345)
+    event = create(:event, group_id: group_stat.group_id)
+    expect(event.group).to eq group_stat
+  end
+
   let(:group_stat) { create(:group_stat, group_id: 14429832) }
   let(:data) {
     [

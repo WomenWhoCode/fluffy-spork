@@ -1,4 +1,15 @@
 RSpec.describe GroupStat, type: :model do
+  it "has a valid factory" do
+    group_stat = build(:group_stat)
+    expect(group_stat.valid?).to be true
+  end
+
+  it "has many events" do
+    group_stat = create(:group_stat)
+    event = create(:event, group_id: group_stat.group_id)
+    expect(group_stat.events.first).to eq event
+  end
+
   describe ".insert_records" do
     let(:data) {
       [
