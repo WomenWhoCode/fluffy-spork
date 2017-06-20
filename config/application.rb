@@ -6,6 +6,7 @@ require 'erb'
 require 'bugsnag'
 
 require './config/environment'
+require './config/i18n'
 
 Dir.glob('app/models/**/*.rb').each { |r| load r}
 Dir.glob('lib/**/*.rb').each { |r| load r}

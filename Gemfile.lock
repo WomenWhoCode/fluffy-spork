@@ -126,6 +126,7 @@ DEPENDENCIES
   factory_girl
   faker (~> 1.7)
   http
+  i18n
   nitlink
   pg
   pry
