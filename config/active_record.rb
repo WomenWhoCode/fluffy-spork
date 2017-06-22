@@ -1,6 +1,4 @@
 require 'active_record'
-if ENV["DB"] != "production"
-  logfile = File.open('log/active_record.log','a')
-  logfile.sync = true
-  ActiveRecord::Base.logger = Logger.new(logfile)
+if ENV["DB"] == "production"
+  ActiveRecord::Base.logger = Logger.new(STDOUT)
 end
