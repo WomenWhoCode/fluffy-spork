@@ -8,6 +8,7 @@ require 'bugsnag'
 
 require './config/i18n'
 
+Dir[File.dirname(__FILE__) + "/../app/models/concerns/*.rb"].each { |file| require file }
 Dir[File.dirname(__FILE__) + "/../app/**/*.rb"].each { |file| require file }
 Dir[File.dirname(__FILE__) + "/../lib/**/*.rb"].each { |file| require file }
 
