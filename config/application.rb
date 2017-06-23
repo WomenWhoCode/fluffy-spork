@@ -1,14 +1,16 @@
+require './config/environment'
 require 'pg'
-require 'active_record'
+require './config/active_record'
 require 'yaml'
 require 'http'
 require 'erb'
 require 'bugsnag'
 
-require './config/environment'
+require './config/i18n'
 
-Dir.glob('app/models/**/*.rb').each { |r| load r}
-Dir.glob('lib/**/*.rb').each { |r| load r}
+Dir[File.dirname(__FILE__) + "/../app/models/concerns/*.rb"].each { |file| require file }
+Dir[File.dirname(__FILE__) + "/../app/**/*.rb"].each { |file| require file }
+Dir[File.dirname(__FILE__) + "/../lib/**/*.rb"].each { |file| require file }
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the

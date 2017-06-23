@@ -3,7 +3,7 @@ namespace :data_import do
   task :pro_group, [:group] do |t, args|
     begin
       group = args[:group].presence || 'womenwhocode'
-      m = Meetup::Api.new(data_type: ["pro", group, "groups"], options: {})
+      m = Meetup::Api.new(data_type: ["pro", group, "groups"])
       data = m.get_response
       while data
         GroupStat.insert_records(data)
@@ -12,6 +12,16 @@ namespace :data_import do
 
     rescue Exception => e
       Bugsnag.notify(e)
+    end
+  end
+
+  desc "pull event data. Usage: rake data_import:events['Women-Who-Code-Silicon-Valley']"
+  task :events, [:urlname] do |t, args|
+    scope = args[:urlname].present? ? GroupStat.where(urlname: args[:urlname]) : GroupStat.all
+
+    scope.find_each do |group_stat|
+      next unless group_stat.urlname.present?
+      Event.retrieve_events(group_stat)
     end
   end
 end

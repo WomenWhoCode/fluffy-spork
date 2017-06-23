@@ -8,6 +8,7 @@ gem 'standalone_migrations'
 gem 'bugsnag'
 gem 'pry'
 gem 'nitlink'
+gem 'i18n'
 
 group :development, :test do
   gem 'factory_girl'
