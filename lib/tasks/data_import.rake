@@ -27,7 +27,11 @@ namespace :data_import do
 
   desc "pull rsvp data. Usage: rake data_import:rsvps['Women-Who-Code-Silicon-Valley']"
   task :rsvps, [:urlname] do |t, args|
-    scope = args[:urlname].present? ? Event.where(group_urlname: args[:urlname]) : Event.all
+    if args[:urlname].present?
+      scope = Event.without_rsvp.where(group_urlname: args[:urlname])
+    else
+      scope = Event.without_rsvp
+    end
 
     scope.find_each do |event|
       next unless event.group_urlname.present?
