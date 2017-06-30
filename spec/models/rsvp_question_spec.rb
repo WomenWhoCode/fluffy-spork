@@ -101,9 +101,17 @@ RSpec.describe RSVPQuestion, type: :model do
       }.to_not change(RSVPQuestion, :count)
     end
 
-    it "skips rsvp_question record if answer is not provided" do
+    it "skips rsvp_question record if answer is not included in response" do
       row = data[0]
       row.delete("answers")
+      expect {
+        RSVPQuestion.create_from_answers(row)
+      }.to_not change(RSVPQuestion, :count)
+    end
+
+    it "skips rsvp_question record if answer provided is blank" do
+      row = data[0]
+      row["answers"][0]["answer"] = ""
       expect {
         RSVPQuestion.create_from_answers(row)
       }.to_not change(RSVPQuestion, :count)

@@ -11,7 +11,7 @@ class RSVPQuestion < ActiveRecord::Base
             )
 
         meetup_data = m.get_response
-        while meetup_data && meetup_data.any?
+        while !meetup_data.blank?
           meetup_data.each do |data|
             RSVPQuestion.create_from_answers(data)
           end
@@ -24,7 +24,7 @@ class RSVPQuestion < ActiveRecord::Base
     end
 
     def create_from_answers(data)
-      return nil unless data["answers"] && data["answers"].any?
+      return nil if data["answers"].blank?
 
       fields = {
         event_id: data["event"]["id"],
@@ -33,6 +33,7 @@ class RSVPQuestion < ActiveRecord::Base
       }
 
       data["answers"].each do |ans|
+        next if ans["answer"].blank?
         ans.delete("updated")
         RSVPQuestion.find_or_create_by(fields.merge(ans))
       end
