@@ -32,7 +32,14 @@ module Meetup
       end
 
       rescue => e
-        Bugsnag.notify("Error parsing Meetup response: #{e}")
+        Bugsnag.notify("Error parsing Meetup response: #{e}") do |notification|
+          notification.add_tab(:meetup, {
+            request_url: sanitized_url,
+            response: @response.to_a,
+            remaining_requests: @remaining_requests,
+            reset_seconds: @reset_seconds
+          })
+        end
         return {}
     end
 
