@@ -33,7 +33,7 @@ module Meetup
 
       rescue => e
         Bugsnag.notify("Error parsing Meetup response: #{e}")
-        { "errors" => [{"message": "Error parsing Meetup response"}] }
+        return {}
     end
 
     def build_url

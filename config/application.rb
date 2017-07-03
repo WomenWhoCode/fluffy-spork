@@ -32,7 +32,11 @@ ActiveRecord::Base.establish_connection(connection_details)
 # https://docs.bugsnag.com/platforms/ruby/other/
 Bugsnag.configure do |config|
   config.api_key = ENV['BUGSNAG_KEY']
-  config.release_stage = ENV['DB']
+
+  # some of our ENV are set to "production" in Heroku
+  # so let's use an app name if its set
+  # https://devcenter.heroku.com/articles/dyno-metadata
+  config.release_stage = ENV['HEROKU_APP_NAME'] || ENV['DB']
 end
 
 at_exit do

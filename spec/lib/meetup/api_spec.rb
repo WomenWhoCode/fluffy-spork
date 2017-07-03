@@ -115,7 +115,7 @@ describe Meetup::Api do
         .to_return(body: '{}', status: 404, headers: {})
 
         expect(Bugsnag).to receive(:notify).once
-        expect(meetup_api.get_response).to include("errors")
+        expect(meetup_api.get_response).to eq Hash.new
       end
     end
   end
