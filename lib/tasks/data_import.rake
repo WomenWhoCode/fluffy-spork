@@ -25,7 +25,7 @@ namespace :data_import do
 
       meetup_api.reset_data_options(
         data_type: [group_stat.urlname, "events"],
-        options: group_stat.get_last_event_time_option
+        options: group_stat.get_last_event_time_option.merge({status: :past})
       )
       Event.retrieve_events(group_stat, meetup_api)
     end
