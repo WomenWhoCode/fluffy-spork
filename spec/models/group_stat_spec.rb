@@ -96,4 +96,19 @@ RSpec.describe GroupStat, type: :model do
       expect(group_stat.past_events).to eq 5
     end
   end
+
+  describe "#get_last_event_time_option" do
+    let(:group_stat) { create(:group_stat) }
+
+    it "does not return scroll parameter if no events" do
+      expect(group_stat.get_last_event_time_option).to eq Hash.new
+    end
+
+    it "returns scroll parameter if events exist" do
+      create(:event, time: Time.utc(2017,6,19,10,28,14), group_id: group_stat.group_id)
+      expect(group_stat.get_last_event_time_option).to eq(
+        { scroll: "since:2017-06-19T10:28:14.000-00:00" }
+      )
+    end
+  end
 end

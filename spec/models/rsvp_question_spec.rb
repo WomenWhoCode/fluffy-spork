@@ -120,13 +120,14 @@ RSpec.describe RSVPQuestion, type: :model do
 
   describe ".retrieve_answers" do
     let(:response) { data }
+    let(:meetup_api) { Meetup::Api.new(data_type: ['foo']) }
     before do
       meetup_request_success_stub
     end
 
     it "increases rsvp_question records" do
       expect {
-        RSVPQuestion.retrieve_answers(build(:event))
+        RSVPQuestion.retrieve_answers(build(:event), meetup_api)
       }.to change(RSVPQuestion, :count).by(1)
     end
   end

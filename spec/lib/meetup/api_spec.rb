@@ -177,4 +177,15 @@ describe Meetup::Api do
       meetup_api.throttle_wait
     end
   end
+
+  context '#reset_data_options' do
+    let(:meetup_api) { Meetup::Api.new(data_type: ['cat'], options: {foo: 'bar'}) }
+
+    it 'sets new url data after calling reset' do
+      meetup_api.build_url
+      meetup_api.reset_data_options(data_type: ['dog'])
+      expect(meetup_api.build_url).to_not include('cat', 'foo=bar')
+      expect(meetup_api.build_url).to include('dog')
+    end
+  end
 end

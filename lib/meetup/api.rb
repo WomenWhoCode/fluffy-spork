@@ -62,6 +62,13 @@ module Meetup
       get_response if @url
     end
 
+    def reset_data_options(data_type:, options: {})
+      @data_type = data_type
+      @options = options
+      @options[:key] = ENV['MEETUP_KEY']
+      @url = build_url
+    end
+
     protected
 
     def base_url
