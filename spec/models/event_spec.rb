@@ -77,19 +77,15 @@ RSpec.describe Event, type: :model do
 
   describe ".retrieve_events" do
     let(:response) { data }
+    let(:meetup_api) { Meetup::Api.new(data_type: ['foo']) }
     before do
       meetup_request_success_stub
     end
 
-    it "does not pass scroll parameter if no events" do
-      expect(Meetup::Api).to receive(:new).with(data_type: [group_stat.urlname, "events"]).and_return(Meetup::Api.new(data_type: []))
-      Event.retrieve_events(group_stat)
-    end
-
-    it "passes scroll parameter if events exist" do
-      create(:event, time: Time.utc(2017,6,19,10,28,14), group_id: group_stat.group_id)
-      expect(Meetup::Api).to receive(:new).with(data_type: [group_stat.urlname, "events"], options: { scroll: "since:2017-06-19T10:28:14.000-00:00" } ).and_return(Meetup::Api.new(data_type: []))
-      Event.retrieve_events(group_stat)
+    it "increases event records" do
+      expect {
+        Event.retrieve_events(build(:group_stat), meetup_api)
+      }.to change(Event, :count).by(1)
     end
   end
 end
