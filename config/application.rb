@@ -1,14 +1,16 @@
+require './config/environment'
 require 'pg'
-require 'active_record'
+require './config/active_record'
 require 'yaml'
 require 'http'
 require 'erb'
 require 'bugsnag'
 
-require './config/environment'
+require './config/i18n'
 
-Dir.glob('app/models/**/*.rb').each { |r| load r}
-Dir.glob('lib/**/*.rb').each { |r| load r}
+Dir[File.dirname(__FILE__) + "/../app/models/concerns/*.rb"].each { |file| require file }
+Dir[File.dirname(__FILE__) + "/../app/**/*.rb"].each { |file| require file }
+Dir[File.dirname(__FILE__) + "/../lib/**/*.rb"].each { |file| require file }
 
 # Load development credentials from config file:
 # Copy config/application.yml.example to config/application.yml and fill in the
@@ -30,7 +32,11 @@ ActiveRecord::Base.establish_connection(connection_details)
 # https://docs.bugsnag.com/platforms/ruby/other/
 Bugsnag.configure do |config|
   config.api_key = ENV['BUGSNAG_KEY']
-  config.release_stage = ENV['DB']
+
+  # some of our ENV are set to "production" in Heroku
+  # so let's use an app name if its set
+  # https://devcenter.heroku.com/articles/dyno-metadata
+  config.release_stage = ENV['HEROKU_APP_NAME'] || ENV['DB']
 end
 
 at_exit do

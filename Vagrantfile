@@ -82,5 +82,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, privileged: false, inline:<<-SHELL
     cd /vagrant
     bundler install
+    bundle exec rake db:setup
   SHELL
 end

@@ -1,8 +1,8 @@
 describe Meetup::Api do
-  it 'fails without #options' do
+  it 'does not fail without #options' do
     expect {
       Meetup::Api.new(data_type: [])
-    }.to raise_error(ArgumentError)
+    }.to_not raise_error
   end
 
   it 'fails without #data_type' do
@@ -115,8 +115,49 @@ describe Meetup::Api do
         .to_return(body: '{}', status: 404, headers: {})
 
         expect(Bugsnag).to receive(:notify).once
-        expect(meetup_api.get_response).to include("errors")
+        expect(meetup_api.get_response).to eq Hash.new
       end
+    end
+  end
+
+  context "#get_next_page" do
+    let(:response) do
+      [{
+        "id"=>12345,
+        "name"=>"Meetup Group Name",
+        "link"=>"https://www.meetup.com/Meetup-Group-Name/",
+      }]
+    end
+    let(:meetup_api) { Meetup::Api.new(data_type: [], options: {}) }
+
+    before do
+      meetup_request_link_stub
+      meetup_api.get_response
+    end
+
+    it "returns next page data" do
+      expect(meetup_api.get_next_page).to eq response
+    end
+
+    it "returns nil if date passed is earlier than since date in link" do
+      expect(meetup_api.get_next_page(Date.new(2017,5,1))).to be nil
+    end
+
+    it "returns nil if no remaining link header" do
+      meetup_api.get_next_page
+      expect(meetup_api.get_next_page).to be nil
+    end
+
+    it "sets remaining_requests and reset_seconds values" do
+      meetup_api.get_next_page
+      expect(meetup_api.remaining_requests).to eq 29
+      expect(meetup_api.reset_seconds).to eq 10
+    end
+
+    it "creates watermark if none is set" do
+      expect{
+        meetup_api.get_next_page
+      }.to change(Watermark, :count).by(1)
     end
   end
 
@@ -134,6 +175,17 @@ describe Meetup::Api do
       meetup_api.reset_seconds = 10
       expect_any_instance_of(Meetup::Api).to receive(:sleep).with(meetup_api.reset_seconds)
       meetup_api.throttle_wait
+    end
+  end
+
+  context '#reset_data_options' do
+    let(:meetup_api) { Meetup::Api.new(data_type: ['cat'], options: {foo: 'bar'}) }
+
+    it 'sets new url data after calling reset' do
+      meetup_api.build_url
+      meetup_api.reset_data_options(data_type: ['dog'])
+      expect(meetup_api.build_url).to_not include('cat', 'foo=bar')
+      expect(meetup_api.build_url).to include('dog')
     end
   end
 end

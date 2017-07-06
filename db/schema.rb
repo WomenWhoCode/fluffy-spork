@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170607214332) do
+ActiveRecord::Schema.define(version: 20170627051832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "events", force: :cascade do |t|
+    t.string "event_id"
+    t.integer "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "time"
+    t.string "group_urlname"
+  end
 
   create_table "group_stats", force: :cascade do |t|
     t.integer "group_id"
@@ -41,6 +50,17 @@ ActiveRecord::Schema.define(version: 20170607214332) do
     t.float "gender_male", default: 0.0
     t.float "gender_other", default: 0.0
     t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rsvp_questions", force: :cascade do |t|
+    t.string "event_id"
+    t.integer "question_id"
+    t.string "question"
+    t.string "answer"
+    t.integer "member_id"
+    t.string "group_urlname"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

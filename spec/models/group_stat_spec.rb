@@ -1,4 +1,15 @@
 RSpec.describe GroupStat, type: :model do
+  it "has a valid factory" do
+    group_stat = build(:group_stat)
+    expect(group_stat.valid?).to be true
+  end
+
+  it "has many events" do
+    group_stat = create(:group_stat)
+    event = create(:event, group_id: group_stat.group_id)
+    expect(group_stat.events.first).to eq event
+  end
+
   describe ".insert_records" do
     let(:data) {
       [
@@ -83,6 +94,21 @@ RSpec.describe GroupStat, type: :model do
       GroupStat.insert_records(data)
       group_stat.reload
       expect(group_stat.past_events).to eq 5
+    end
+  end
+
+  describe "#get_last_event_time_option" do
+    let(:group_stat) { create(:group_stat) }
+
+    it "does not return scroll parameter if no events" do
+      expect(group_stat.get_last_event_time_option).to eq Hash.new
+    end
+
+    it "returns scroll parameter if events exist" do
+      create(:event, time: Time.utc(2017,6,19,10,28,14), group_id: group_stat.group_id)
+      expect(group_stat.get_last_event_time_option).to eq(
+        { scroll: "since:2017-06-19T10:28:14.000-00:00" }
+      )
     end
   end
 end

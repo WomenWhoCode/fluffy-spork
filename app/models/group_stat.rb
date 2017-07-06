@@ -1,22 +1,22 @@
 class GroupStat < ActiveRecord::Base
-  DATE_FIELDS = %w(founded_date pro_join_date last_event next_event)
+  include Retrievable
+
+  has_many :events, primary_key: :group_id, foreign_key: :group_id
 
   class << self
-    def insert_records(records)
-      records.each do |record|
-        group_stat = self.where(group_id: record["id"]).first_or_create
-        record.delete("id")
-        record.each do |k,v|
-          setter = "#{k}="
-          next unless group_stat.respond_to?(setter)
-          if DATE_FIELDS.include?(k)
-            group_stat.send(setter, DateTime.strptime("#{v}",'%Q'))
-          else
-            group_stat.send(setter,v)
-          end
-        end
-        group_stat.save
-      end
+    def meetup_primary_key
+      :group_id
+    end
+  end
+
+  def get_last_event_time_option
+    last_event_time = events.order(time: :desc).first.try(:time)
+
+    if last_event_time
+      since_time = I18n.l last_event_time, format: :meetup_scroll_since
+      options = { scroll: "since:#{since_time}" }
+    else
+      {}
     end
   end
 end
