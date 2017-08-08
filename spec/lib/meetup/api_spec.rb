@@ -110,12 +110,19 @@ describe Meetup::Api do
     end
 
     context "invalid request" do
-      it 'notifies Bugsnag on error' do
-        stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
-        .to_return(body: '{}', status: 404, headers: {})
+      before do
+        meetup_request_error_stub
+      end
 
+      it 'notifies Bugsnag on error' do
         expect(Bugsnag).to receive(:notify).once
         expect(meetup_api.get_response).to eq Hash.new
+      end
+
+      it "does not create watermark" do
+        expect{
+          meetup_api.get_response
+        }.to_not change(Watermark, :count)
       end
     end
   end

@@ -27,12 +27,12 @@ module Meetup
         return {}
       else
         set_throttle_values
-        update_watermark
         get_body
       end
 
       rescue => e
         Bugsnag.notify("Error parsing Meetup response: #{e}") do |notification|
+          notification.grouping_hash = e.class.to_s + e.message
           notification.add_tab(:meetup, {
             request_url: sanitized_url,
             response: @response.to_a,
@@ -69,6 +69,10 @@ module Meetup
       @url = build_url
     end
 
+    def sanitized_url
+      @url.gsub(/key=[a-f0-9]+/,'key=sanitized')
+    end
+
     protected
 
     def base_url
@@ -85,6 +89,7 @@ module Meetup
       body = @response.parse(:json)
 
       if response_success?
+        update_watermark
         body
       else
         errors = body["errors"] || [{"message": "Meetup response has no body"}]
@@ -102,13 +107,9 @@ module Meetup
       @url ||= build_url
       MMLog.log.debug(sanitized_url)
 
-      @watermark = Watermark.where(url: sanitized_url).first_or_create
+      @watermark = Watermark.where(url: sanitized_url).first_or_initialize
       etag_str = %Q|#{@watermark.etag}|
       HTTP.headers('If-None-Match' => "#{etag_str}").get(@url)
-    end
-
-    def sanitized_url
-      @url.gsub(/key=[a-f0-9]+/,'key=sanitized')
     end
 
     def pagination_link(until_date)

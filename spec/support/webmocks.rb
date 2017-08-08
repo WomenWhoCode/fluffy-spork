@@ -7,6 +7,11 @@ module Webmocks
                          "X-Ratelimit-Reset"=>"#{reset}"})
   end
 
+  def meetup_request_error_stub
+    stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
+    .to_return(body: '{}', status: 404, headers: {})
+  end
+
   def meetup_request_not_modified_stub
     stub_request(:get, Regexp.new(Meetup::Api::BASE_URI))
     .to_return(status: 304)
