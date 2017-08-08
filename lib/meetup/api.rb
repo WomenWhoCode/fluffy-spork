@@ -69,6 +69,10 @@ module Meetup
       @url = build_url
     end
 
+    def sanitized_url
+      @url.gsub(/key=[a-f0-9]+/,'key=sanitized')
+    end
+
     protected
 
     def base_url
@@ -105,10 +109,6 @@ module Meetup
       @watermark = Watermark.where(url: sanitized_url).first_or_create
       etag_str = %Q|#{@watermark.etag}|
       HTTP.headers('If-None-Match' => "#{etag_str}").get(@url)
-    end
-
-    def sanitized_url
-      @url.gsub(/key=[a-f0-9]+/,'key=sanitized')
     end
 
     def pagination_link(until_date)

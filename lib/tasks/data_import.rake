@@ -47,7 +47,8 @@ namespace :data_import do
         data_type: [event.group_urlname, "events", event.event_id, "rsvps"],
         options: {fields: "answers"}
       )
-      RSVPQuestion.retrieve_answers(event, meetup_api)
+      watermark = Watermark.where(url: meetup_api.sanitized_url).first
+      RSVPQuestion.retrieve_answers(event, meetup_api) unless watermark
     end
   end
 end
