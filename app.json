@@ -21,6 +21,10 @@
     "BUGSNAG_KEY": {
       "description": "The key required to communicate with the Bugsnag API",
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "description": "Set by Heroku to the name of this review app",
+      "required": true
     }
   },
   "formation": {
