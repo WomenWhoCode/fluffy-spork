@@ -27,7 +27,6 @@ module Meetup
         return {}
       else
         set_throttle_values
-        update_watermark
         get_body
       end
 
@@ -89,6 +88,7 @@ module Meetup
       body = @response.parse(:json)
 
       if response_success?
+        update_watermark
         body
       else
         errors = body["errors"] || [{"message": "Meetup response has no body"}]
@@ -106,7 +106,7 @@ module Meetup
       @url ||= build_url
       MMLog.log.debug(sanitized_url)
 
-      @watermark = Watermark.where(url: sanitized_url).first_or_create
+      @watermark = Watermark.where(url: sanitized_url).first_or_initialize
       etag_str = %Q|#{@watermark.etag}|
       HTTP.headers('If-None-Match' => "#{etag_str}").get(@url)
     end
