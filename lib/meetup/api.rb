@@ -33,6 +33,7 @@ module Meetup
 
       rescue => e
         Bugsnag.notify("Error parsing Meetup response: #{e}") do |notification|
+          notification.grouping_hash = e.class.to_s + e.message
           notification.add_tab(:meetup, {
             request_url: sanitized_url,
             response: @response.to_a,
