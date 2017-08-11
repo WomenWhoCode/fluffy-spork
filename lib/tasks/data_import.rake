@@ -1,6 +1,7 @@
 namespace :data_import do
   desc "pull pro group data. Usage: rake data_import:pro_group['groupname']"
   task :pro_group, [:group] do |t, args|
+    MMLog.log.debug("START data_import:pro_group")
     begin
       group = args[:group].presence || 'womenwhocode'
       m = Meetup::Api.new(data_type: ["pro", group, "groups"])
@@ -13,10 +14,12 @@ namespace :data_import do
     rescue Exception => e
       Bugsnag.notify(e)
     end
+    MMLog.log.debug("END data_import:pro_group")
   end
 
   desc "pull event data. Usage: rake data_import:events['Women-Who-Code-Silicon-Valley']"
   task :events, [:urlname] do |t, args|
+    MMLog.log.debug("START data_import:events")
     scope = args[:urlname].present? ? GroupStat.where(urlname: args[:urlname]) : GroupStat.all
 
     meetup_api = Meetup::Api.new(data_type: [])
@@ -29,10 +32,12 @@ namespace :data_import do
       )
       Event.retrieve_events(group_stat, meetup_api)
     end
+    MMLog.log.debug("END data_import:events")
   end
 
   desc "pull rsvp data. Usage: rake data_import:rsvps['Women-Who-Code-Silicon-Valley']"
   task :rsvps, [:urlname] do |t, args|
+    MMLog.log.debug("START data_import:rsvps")
     if args[:urlname].present?
       scope = Event.without_rsvp.where(group_urlname: args[:urlname])
     else
@@ -50,5 +55,6 @@ namespace :data_import do
       watermark = Watermark.where(url: meetup_api.sanitized_url).first
       RSVPQuestion.retrieve_answers(event, meetup_api) unless watermark
     end
+    MMLog.log.debug("END data_import:rsvps")
   end
 end
