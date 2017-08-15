@@ -113,12 +113,14 @@ module Meetup
     end
 
     def pagination_link(until_date)
-      target = @response.links.by_rel('next').try(:target)
-      return target.to_s if target && !until_date
+      if response_success?
+        target = @response.links.by_rel('next').try(:target)
+        return target.to_s if target && !until_date
 
-      if target && target.to_s =~ /scroll=since%3A(\d{4}-\d{2}-\d{2})/
-        since_date = Date.strptime($1, "%Y-%m-%d")
-        since_date < until_date ? target.to_s : nil
+        if target && target.to_s =~ /scroll=since%3A(\d{4}-\d{2}-\d{2})/
+          since_date = Date.strptime($1, "%Y-%m-%d")
+          since_date < until_date ? target.to_s : nil
+        end
       end
     end
   end
