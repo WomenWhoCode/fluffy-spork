@@ -105,7 +105,7 @@ module Meetup
 
     def do_request
       @url ||= build_url
-      MMLog.log.debug(sanitized_url)
+      MMLog.log.info(sanitized_url)
 
       @watermark = Watermark.where(url: sanitized_url).first_or_initialize
       etag_str = %Q|#{@watermark.etag}|
